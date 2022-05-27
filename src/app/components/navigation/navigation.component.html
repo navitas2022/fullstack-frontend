@@ -7,15 +7,17 @@
 
   <span>
     <a
-    class="home-class" id="home435"
+      class="home-class"
+      id="home435"
       *ngIf="isAuthenticated"
       routerLinkActive="active-link"
-      routerLink="/home"
+      routerLink="/"
     >
       <span>Home</span>
     </a>
     <a
-      class="login-class" id="login834"
+      class="login-class"
+      id="login834"
       *ngIf="!isAuthenticated"
       routerLinkActive="active-link"
       routerLink="/login"
@@ -30,14 +32,17 @@
     <span>Post</span>
   </a> -->
     <a
-      class="upload-class" id="upload983"
+      class="upload-class"
+      id="upload983"
       *ngIf="isAuthenticated"
       routerLinkActive="active-link"
       routerLink="/home"
     >
       <span>Upload</span>
     </a>
-    <a class="logout-class" id="logout325"
+    <a
+      class="logout-class"
+      id="logout325"
       *ngIf="isAuthenticated"
       (click)="logout()"
       routerLinkActive="active-link"
@@ -45,7 +50,9 @@
     >
       <span>Logout</span>
     </a>
-    <a class="signup-class" id="signup124"
+    <a
+      class="signup-class"
+      id="signup124"
       *ngIf="!isAuthenticated"
       routerLinkActive="active-link"
       routerLink="/signup"
