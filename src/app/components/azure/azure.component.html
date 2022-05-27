@@ -1,0 +1,38 @@
+<h1>List Containers</h1>
+<button (click)="getContainers()">List Container</button>
+<input type="text" name="containername" id="contname" #contname />
+<button (click)="create(contname.value)" id="addcontainer628">Add Container</button>
+<ul>
+  <li *ngFor="let container of containers">
+    {{ container }}
+    <button (click)="listFiles(container)">select</button>
+    <button (click)="deleteContainer(container)">delete</button>
+  </li>
+</ul>
+
+<h1>List Files</h1>
+<ul>
+  <li *ngFor="let item of listItems">
+    {{ item.name }}
+    <button (click)="downloadFile(selectedContainer, item.name)">
+      download
+    </button>
+    <button (click)="delete(item.name)">delete</button>
+  </li>
+</ul>
+
+<br />
+<div>
+  <label>Selected Container : </label>
+  <h1>{{ selectedContainer }}</h1>
+</div>
+
+<input
+  type="file"
+  accept="*.xls,*.xlsx,*.doc,*.docx"
+  name="upload"
+  multiple
+  id="uploadID"
+  #file
+/>
+<button (click)="upload(file)">upload</button>
