@@ -1,7 +1,7 @@
-<h1>List Containers</h1>
-<button (click)="getContainers()">List Container</button>
+<!-- <h1>List Folder</h1>
+<button (click)="getContainers()">List Folder</button>
 <input type="text" name="containername" id="contname" #contname />
-<button (click)="create(contname.value)" id="addcontainer628">Add Container</button>
+<button (click)="create(contname.value)" id="addcontainer628">Add Folder</button>
 <ul>
   <li *ngFor="let container of containers">
     {{ container }}
@@ -27,12 +27,16 @@
   <h1>{{ selectedContainer }}</h1>
 </div>
 
-<input
-  type="file"
-  accept="*.xls,*.xlsx,*.doc,*.docx"
-  name="upload"
-  multiple
-  id="uploadID"
-  #file
-/>
-<button (click)="upload(file)">upload</button>
+<input type="file" accept="*.xls,*.xlsx,*.doc,*.docx" name="upload" multiple id="uploadID" #file />
+<button (click)="upload(file)">upload</button> -->
+<app-panel1 [dataTable]="cover"></app-panel1>
+<app-panel2 [dataTable]="budget"></app-panel2>
+<app-panel3 [dataTable]="contents"></app-panel3>
+<app-panel4 [dataTable]="abstract"></app-panel4>
+<app-panel5 [dataTable]="performance"></app-panel5>
+<app-panel6 [dataTable]="purpose"></app-panel6>
+<div style="display: flex;align-items:center;margin-top:10px">
+  <!-- <button mat-raised-button color="accent" style="margin-right: auto">Cancel</button> -->
+  <button (click)="save()" mat-raised-button color="primary" style="margin-left: auto">Save and Continue</button>
+  <button mat-raised-button color="primary" style="margin-left: 10px">Mark as Complete</button>
+</div>

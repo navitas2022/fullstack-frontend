@@ -12,7 +12,7 @@ import { CreatePostComponent } from "./components/create-post/create-post.compon
 
 const routes: Routes = [
   { path: "", component: HomeComponent },
-  { path: "home", component: AzureComponent},
+  { path: "home", component: AzureComponent },
   { path: "login", component: LoginComponent },
   { path: "signup", component: SignupComponent },
   { path: "post", component: PostsComponent },
@@ -24,4 +24,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

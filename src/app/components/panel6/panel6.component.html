@@ -1,0 +1,12 @@
+<mat-expansion-panel style="margin-top:10px" #panel [expanded]="true" hideToggle (closed)="panel.open()">
+    <mat-expansion-panel-header
+        style="display: flex;justify-content:space-between;background-image:linear-gradient(#C8D7E1,#B6CCDB) ">
+        <mat-panel-title style="display: flex;width:100%;align-items:center;font-weight:bolder">
+            Document Purpose Unknown
+        </mat-panel-title>
+        <mat-panel-description style="margin-left: auto;">
+            <button (click)="attachFile($event)" mat-raised-button color="primary">Attach File</button>
+        </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-table [data]="dataTable"></app-table>
+</mat-expansion-panel>

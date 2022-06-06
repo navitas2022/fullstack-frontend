@@ -3,7 +3,7 @@ import {
   BlobServiceClient,
 } from "@azure/storage-blob";
 import { BlobItem } from '@azure/storage-blob';
-import { environment } from "src/environments/environment";
+import { environment } from "../../../../src/environments/environment";
 const account = environment.ACCOUNT_NAME;
 const accountKey = environment.SAS;
 // BlobClientServiceString
@@ -20,7 +20,7 @@ export interface CONTENT {
 
 
 export async function getContainers() {
-    // debugger;
+  // debugger;
   let containers = [];
   let iter = blobServiceClient.listContainers();
   let containerItem = await iter.next();
@@ -31,8 +31,8 @@ export async function getContainers() {
   return containers;
 }
 
-export async function createContainer(containername:any) {
-    const ac=account;
+export async function createContainer(containername: any) {
+  const ac = account;
   const containerName = containername || `${new Date().getTime()}`;
   const containerClient = blobServiceClient.getContainerClient(containerName);
   try {
@@ -40,7 +40,7 @@ export async function createContainer(containername:any) {
     return `Create container ${containerName} successfully ${createContainerResponse.requestId}`;
   }
   catch (err) {
-    return {requestId: err.details.requestId, statusCode: err.statusCode, errorCode:err.details.errorCode}
+    return { requestId: err.details.requestId, statusCode: err.statusCode, errorCode: err.details.errorCode }
   }
 }
 
@@ -58,14 +58,14 @@ export async function listBlob(containerName: string) {
   return ListBlobs;
 }
 
-export async function deleteBlob(containerName: string, filename:string){
+export async function deleteBlob(containerName: string, filename: string) {
   const containerClient = blobServiceClient.getContainerClient(containerName);
   const blockBlobClient = containerClient.getBlockBlobClient(filename);
   const deleteBlob = await blockBlobClient.delete();
   return `Deleted Blob ${filename} successfully ${deleteBlob.requestId}`;
 }
 
-export async function deleteContainerV(containerName:string){
+export async function deleteContainerV(containerName: string) {
   const containerClient = blobServiceClient.getContainerClient(containerName);
   const deleteContainer = await containerClient.delete();
   return `Deleted Blob ${containerName} successfully ${deleteContainer.requestId}`;
@@ -89,15 +89,10 @@ export async function downloadBlob(containerName: string, filename: string) {
   // In browsers, get downloaded data by accessing downloadBlockBlobResponse.blobBody
   const downloadBlockBlobResponse = await blobClient.download();
   const downloaded = await downloadBlockBlobResponse.blobBody;
-  let tmp = <Blob> downloaded
+  let tmp = <Blob>downloaded
   var url = window.URL.createObjectURL(tmp);
-      window.open(url);
-  console.log("Downloaded blob content", downloaded);
-  console.log(
-    "\t",downloadBlockBlobResponse.blobBody);
-
-
-  return `Downloaded Blob ${filename} successfully`;
+  window.open(url)
+  return url;
 
   // [Browsers only] A helper method used to convert a browser Blob into string.
 }

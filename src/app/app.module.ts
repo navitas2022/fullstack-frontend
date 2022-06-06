@@ -13,6 +13,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatListModule } from "@angular/material/list";
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatExpansionModule } from "@angular/material/expansion"
 
 import { NavigationComponent } from "./components/navigation/navigation.component";
 import { SignupComponent } from "./components/signup/signup.component";
@@ -23,6 +24,14 @@ import { CreatePostComponent } from "./components/create-post/create-post.compon
 
 import { AuthInterceptorService } from "./services/auth-interceptor.service";
 import { AzureComponent } from './components/azure/azure.component';
+import { Panel1Component } from './components/panel1/panel1.component';
+import { Panel2Component } from './components/panel2/panel2.component';
+import { Panel3Component } from './components/panel3/panel3.component';
+import { Panel4Component } from './components/panel4/panel4.component';
+import { Panel5Component } from './components/panel5/panel5.component';
+import { TableComponent } from './components/table/table.component';
+import { Panel6Component } from './components/panel6/panel6.component';
+
 
 @NgModule({
   declarations: [
@@ -34,6 +43,13 @@ import { AzureComponent } from './components/azure/azure.component';
     PostsComponent,
     CreatePostComponent,
     AzureComponent,
+    Panel1Component,
+    Panel2Component,
+    Panel3Component,
+    Panel4Component,
+    Panel5Component,
+    TableComponent,
+    Panel6Component,
   ],
   imports: [
     BrowserModule,
@@ -45,6 +61,7 @@ import { AzureComponent } from './components/azure/azure.component';
     MatInputModule,
     MatListModule,
     MatToolbarModule,
+    MatExpansionModule,
     ReactiveFormsModule,
     HttpClientModule,
   ],
@@ -57,4 +74,4 @@ import { AzureComponent } from './components/azure/azure.component';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

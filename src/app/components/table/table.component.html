@@ -1,0 +1,44 @@
+<table [cellSpacing]="0">
+    <thead>
+        <tr>
+            <th class="head name">Document Name</th>
+            <th class="head size-date">Size</th>
+            <th class="head size-date">Date Attached</th>
+            <th class="head desc">Description</th>
+            <th class="head opt">Options</th>
+            <th class="head opt"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="tab-row" *ngFor="let v of data;let el=index">
+            <td class="name">
+                <a (click)="download(v[0],v[4])" href="javascript:void(0)">
+                    {{v[0].name}}
+                </a>
+            </td>
+            <td class="size-date">
+                {{v[1]}}
+            </td>
+            <td class="size-date">
+                {{v[2]}}
+            </td>
+            <td class="desc">
+                {{v[3]}}
+            </td>
+            <td class="opt">
+                <div class="opt-cont">
+                    <img width="13px" height="13px" src="assets/edit.png" alt="">
+                    <span class="opt-desc">update description</span>
+                    <button mat-icon-button>
+                        <mat-icon>arrow_drop_down</mat-icon>
+                    </button>
+                </div>
+            </td>
+            <td class="opt">
+                <button (click)="remove(el)" mat-icon-button color="accent">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
