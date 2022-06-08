@@ -1,0 +1,70 @@
+<table [cellSpacing]="0">
+    <thead>
+        <tr>
+            <th class="head name">Document Name</th>
+            <th class="head size-date">Tracking number</th>
+            <th class="head size-date" *ngIf="isBottom">Status</th>
+            <th class="head size-date" *ngIf="!isHome">Size</th>
+            <th class="head size-date" *ngIf="!isHome">Date Attached</th>
+            <th class="head opt" *ngIf="!isHome">Description</th>
+            <th class="head opt">Options</th>
+            <th class="head desc" *ngIf="!isHome"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="tab-row" *ngFor="let v of data;let el=index">
+            <td class="name">
+                <a (click)="download(v)" href="javascript:void(0)">
+                    {{v.fileName}}
+                </a>
+            </td>
+            <td class="size-date">
+                {{v.token}}
+            </td>
+            <td class="size-date" *ngIf="isBottom">
+                <section *ngIf="isHome">
+                    <mat-select [value]="v.status" (selectionChange)="selectionChange(v, $event)">
+                        <mat-option value="Started">Started</mat-option>
+                        <mat-option value="Not started">Not started</mat-option>
+                        <mat-option value="Finished">Finished</mat-option>
+                      </mat-select>
+
+                </section>
+                <div *ngIf="!isHome">{{v.status}}</div>
+            </td>
+            <td class="size-date" *ngIf="!isHome">
+                {{v.size}}
+            </td>
+            <td class="size-date" *ngIf="!isHome">
+                {{v.date}}
+            </td>
+            <td class="opt" *ngIf="!isHome">
+                {{v.desc}}
+            </td>
+            <td class="opt"  *ngIf="!isHome">
+                <div class="opt-cont">
+                    <img width="13px" height="13px" src="assets/edit.png" alt="">
+                    <span class="opt-desc">update description</span>
+                    <button mat-icon-button>
+                        <mat-icon>arrow_drop_down</mat-icon>
+                    </button>
+                </div>
+            </td>
+            <td class="desc">
+
+                <div class="buttons">
+                <button  *ngIf="isBottom && !isHome" (click)="replacefile(v)" mat-icon-button color="accent">
+                    <mat-icon>change_circle</mat-icon>
+                </button>
+                
+                <button  *ngIf="!isHome" (click)="remove(el)" mat-icon-button color="accent">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <a routerLink="/home" [queryParams]="{scroll: 'true'}" *ngIf="isHome">
+                    correct&nbsp;attachment
+                </a>
+            </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

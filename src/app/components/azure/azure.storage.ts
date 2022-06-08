@@ -17,7 +17,21 @@ export interface CONTENT {
   file: any;  // file to upload
   filename: string; // filename as desired with path
 }
+let maxNumber = 10000;
 
+
+export function setMaxNumber(token: any) { // Public Domain/MIT
+  const d = parseInt(token);
+  if (!isNaN(d)){
+    if (d > maxNumber){
+      maxNumber = d;
+    }
+  }
+}
+export function generateUUID() { // Public Domain/MIT
+  maxNumber++;
+    return maxNumber.toString();
+}
 
 export async function getContainers() {
   // debugger;
@@ -29,6 +43,35 @@ export async function getContainers() {
     containerItem = await iter.next();
   }
   return containers;
+}
+
+
+export interface MyFileData {
+  file: File,
+  size:string,
+  date: string,
+  desc: string,
+  token: string,
+  container: string,
+  fileName: string,
+  status: string,
+
+}
+
+export function newFileUpload(file: File, container: string, desc = "Description", token= '', status= 'Not started'): MyFileData{
+  token = token || generateUUID();
+  let name = file.name.split('.')[0]+token+'.'+file.name.split('.')[file.name.split('.').length-1]
+  name = name.replace(/ /g, '').replace(/[^\x00-\x7F]/g, "");;
+  return {
+    file,
+    size: (file.size / 1024).toFixed(0) + "kb",
+    date: String(new Date()).substring(0, 24),
+    desc,
+    token,
+    container,
+    fileName: name,
+    status
+  }
 }
 
 export async function createContainer(containername: any) {
@@ -49,7 +92,7 @@ export async function listBlob(containerName: string) {
   // BlobContainerClient
   const containerClient = blobServiceClient.getContainerClient(containerName);
   let ListBlobs = [];
-  let iter = containerClient.listBlobsFlat();
+  let iter = containerClient.listBlobsFlat({includeMetadata: true});
   let blobItem = await iter.next();
   while (!blobItem.done) {
     ListBlobs.push(blobItem.value);
@@ -59,6 +102,8 @@ export async function listBlob(containerName: string) {
 }
 
 export async function deleteBlob(containerName: string, filename: string) {
+  console.log('deleteBlob',containerName, filename )
+
   const containerClient = blobServiceClient.getContainerClient(containerName);
   const blockBlobClient = containerClient.getBlockBlobClient(filename);
   const deleteBlob = await blockBlobClient.delete();
@@ -71,28 +116,77 @@ export async function deleteContainerV(containerName: string) {
   return `Deleted Blob ${containerName} successfully ${deleteContainer.requestId}`;
 }
 
-export async function uploadFile(content: CONTENT) {
+export async function uploadFile(content: CONTENT, metadata ?: {
+  [propertyName: string]: string;
+}) {
   const containerClient = blobServiceClient.getContainerClient(content.containerName);
   const blockBlobClient = containerClient.getBlockBlobClient(content.filename);
   const uploadBlobResponse = await blockBlobClient.uploadBrowserData(content.file, {
     maxSingleShotSize: 4 * 1024 * 1024,
-    blobHTTPHeaders: { blobContentType: content.file.type } // set mimetype
+    blobHTTPHeaders: { blobContentType: content.file.type },
+    metadata
   });
   return `Upload block blob ${content.filename} successfully ${uploadBlobResponse.requestId}`;
+}
+
+export async function uploadFile2(content: MyFileData, newContainer?: string, file? :Blob) {
+
+  const containerClient = blobServiceClient.getContainerClient(newContainer || content.container);
+
+  const blockBlobClient = containerClient.getBlockBlobClient(content.fileName);
+
+  const uploadBlobResponse = await blockBlobClient.uploadData(file || content.file, {
+    maxSingleShotSize: 4 * 1024 * 1024,
+    blobHTTPHeaders: { blobContentType: content.file.type },
+    metadata: {
+      size: content.size,
+      token: content.token,
+      date: content.date,
+      container: newContainer || content.container,
+      desc: content.desc,
+      fileName: content.fileName,
+      status: content.status
+    }
+  });
+  console.log('token', content)
+
+  return `Upload block blob ${content.token} successfully ${uploadBlobResponse.requestId}`;
 }
 
 export async function downloadBlob(containerName: string, filename: string) {
   const containerClient = blobServiceClient.getContainerClient(containerName);
   const blobClient = containerClient.getBlobClient(filename);
-
   // Get blob content from position 0 to the end
   // In browsers, get downloaded data by accessing downloadBlockBlobResponse.blobBody
   const downloadBlockBlobResponse = await blobClient.download();
   const downloaded = await downloadBlockBlobResponse.blobBody;
   let tmp = <Blob>downloaded
   var url = window.URL.createObjectURL(tmp);
-  window.open(url)
   return url;
 
   // [Browsers only] A helper method used to convert a browser Blob into string.
 }
+
+
+export async function getBlob(containerName: string, filename: string) {
+  console.log('getBlob',containerName, filename )
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+  const blobClient = containerClient.getBlobClient(filename);
+  // Get blob content from position 0 to the end
+  // In browsers, get downloaded data by accessing downloadBlockBlobResponse.blobBody
+  const downloadBlockBlobResponse = await blobClient.download();
+  const downloaded = await downloadBlockBlobResponse.blobBody;
+  return downloaded;
+
+  // [Browsers only] A helper method used to convert a browser Blob into string.
+}
+
+export async function updateMetadata(containerName: string, filename: string, metadata: any) {
+  console.log('getBlob',containerName, filename )
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+  const blobClient = containerClient.getBlobClient(filename);
+  await blobClient.setMetadata(metadata)
+
+  // [Browsers only] A helper method used to convert a browser Blob into string.
+}
+

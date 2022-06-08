@@ -9,6 +9,8 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
+import { MatSelectModule } from "@angular/material/select";
+
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatListModule } from "@angular/material/list";
@@ -31,7 +33,9 @@ import { Panel4Component } from './components/panel4/panel4.component';
 import { Panel5Component } from './components/panel5/panel5.component';
 import { TableComponent } from './components/table/table.component';
 import { Panel6Component } from './components/panel6/panel6.component';
+import { BottomTableComponent } from './components/bottomTable/bottomTable.component';
 
+import { MyTableComponent } from './components/my-table/my-table.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +54,8 @@ import { Panel6Component } from './components/panel6/panel6.component';
     Panel5Component,
     TableComponent,
     Panel6Component,
+    BottomTableComponent,
+    MyTableComponent
   ],
   imports: [
     BrowserModule,
@@ -64,6 +70,7 @@ import { Panel6Component } from './components/panel6/panel6.component';
     MatExpansionModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatSelectModule,
   ],
   providers: [
     {

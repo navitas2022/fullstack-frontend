@@ -27,7 +27,11 @@ export class AuthService {
     private http: HttpClient,
     private errorHandlerService: ErrorHandlerService,
     private router: Router
-  ) {}
+  ) {
+   const user = localStorage.getItem('user');
+   this.isUserLoggedIn$.next(!!user);
+
+  }
 
   signup(user: Omit<User, "id">): Observable<User> {
     return this.http
@@ -75,7 +79,7 @@ export class AuthService {
             map(resp => {
                 // if (resp && resp.success && resp.data.token) {
                     // localStorage.setItem('token', resp.data.token)
-                    // localStorage.setItem('user', JSON.stringify(resp.data))
+                    localStorage.setItem('user', JSON.stringify(resp.data))
                     this.user = resp
                     // console.log('resp',resp.error.message)
                     this.userId = resp.id;

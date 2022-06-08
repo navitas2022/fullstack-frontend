@@ -1,0 +1,57 @@
+.head {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    padding-top:10px ;
+    padding-bottom:10px ;
+}
+td{
+    padding:-5px ;
+}
+.name,
+.size-date,
+.desc,
+.opt {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.name {
+    width: 15%
+}
+
+.size-date {
+    text-align: center;
+    width: 15%;
+}
+
+.desc {
+    width: 30%;
+}
+
+.opt {
+    width: 18% !important;
+}
+
+.opt-cont {
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.opt-desc {
+    margin-left: 3px;
+}
+
+.tab-row:not(:first-of-type):not(:last-of-type) td {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+table{
+    margin: 0 auto;
+}
+
+.buttons{
+    display: flex;
+}

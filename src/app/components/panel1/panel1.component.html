@@ -2,13 +2,13 @@
     <mat-expansion-panel-header
         style="display: flex;justify-content:space-between;background-image:linear-gradient(#C8D7E1,#B6CCDB) ">
         <mat-panel-title style="display: flex;width:100%;align-items:center;font-weight:bolder">
-            <mat-icon style="font-size:22px;margin-left: 10px;margin-right: 10px;color:#852628">star
+            <mat-icon *ngIf="isRequired" style="font-size:22px;margin-left: 10px;margin-right: 10px;color:#852628">star
             </mat-icon>
-            Cover Page
+            {{name}}
         </mat-panel-title>
         <mat-panel-description style="margin-left: auto;">
             <button (click)="attachFile($event)" mat-raised-button color="primary">Attach File</button>
         </mat-panel-description>
     </mat-expansion-panel-header>
-    <app-table [data]="dataTable"></app-table>
+    <app-my-table [data]="dataTable" [container]="container"></app-my-table>
 </mat-expansion-panel>

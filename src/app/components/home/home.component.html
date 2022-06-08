@@ -1,1 +1,8 @@
-<p>Please Register and then Login</p>
+<p *ngIf="!(authService.isUserLoggedIn$ | async)">Please Register and then Login</p>
+
+<section *ngIf="(authService.isUserLoggedIn$ | async)">
+  <section *ngIf="allfiles && allfiles.length">
+    <app-bottom-table [dataTable]="allfiles" [container]="containersList.allfiles" isHome="true">
+    </app-bottom-table>
+  </section>
+</section>

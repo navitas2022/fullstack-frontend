@@ -1,7 +1,8 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatExpansionPanel } from '@angular/material/expansion';
-import { deleteBlob, listBlob } from "../azure/azure.storage"
+import { deleteBlob, listBlob, newFileUpload, uploadFile2 } from "../azure/azure.storage"
 import BMF from "browser-md5-file"
+import { AllContainers } from '../azure/azure.component';
 
 @Component({
   selector: 'app-panel1',
@@ -11,6 +12,11 @@ import BMF from "browser-md5-file"
 export class Panel1Component implements OnInit {
   @ViewChild("panel") panel: MatExpansionPanel
   @Input() dataTable = []
+  @Input() name :string;
+  @Input() container :string;
+  @Input() isMulti = false;
+  @Input() isRequired = false;
+  @Output() uploadFile = new EventEmitter<File>();
   bmf = new BMF()
   constructor() {
 
@@ -29,15 +35,22 @@ export class Panel1Component implements OnInit {
     input.click()
     input.onchange = async (e: any) => {
       let file = e.target.files[0]
-      if (!this.dataTable.length) {
-        this.dataTable.push([file, (file.size / 1024).toFixed(0) + "kb", String(new Date()).substring(0, 24), "Description", "coverpage"])
+      const newFile = newFileUpload(file,this.container);
+      console.log('newFile', newFile);
+      if (!this.dataTable.length || this.isMulti) {
+        await uploadFile2(newFile)
+
+        this.dataTable.push(newFile)
       }
 
       else {
         let conf = confirm("Only one file allowed. Do you want to replace the file?")
         if (conf) {
-          await deleteBlob("coverpage", this.dataTable[0][0].name)
-          this.dataTable[0] = [file, (file.size / 1024).toFixed(0) + "kb", String(new Date()).substring(0, 24), "Description", "coverpage"]
+          await deleteBlob(this.container, this.dataTable[0].fileName)
+          await uploadFile2(newFile)
+
+          this.dataTable = [];
+          this.dataTable.push(newFile)
         }
       }
     }

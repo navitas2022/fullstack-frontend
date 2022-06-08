@@ -29,14 +29,28 @@
 
 <input type="file" accept="*.xls,*.xlsx,*.doc,*.docx" name="upload" multiple id="uploadID" #file />
 <button (click)="upload(file)">upload</button> -->
-<app-panel1 [dataTable]="cover"></app-panel1>
-<app-panel2 [dataTable]="budget"></app-panel2>
-<app-panel3 [dataTable]="contents"></app-panel3>
-<app-panel4 [dataTable]="abstract"></app-panel4>
-<app-panel5 [dataTable]="performance"></app-panel5>
-<app-panel6 [dataTable]="purpose"></app-panel6>
-<div style="display: flex;align-items:center;margin-top:10px">
-  <!-- <button mat-raised-button color="accent" style="margin-right: auto">Cancel</button> -->
-  <button (click)="save()" mat-raised-button color="primary" style="margin-left: auto">Save and Continue</button>
-  <button mat-raised-button color="primary" style="margin-left: 10px">Mark as Complete</button>
-</div>
+<p *ngIf="!(authService.isUserLoggedIn$ | async)">Please Register and then Login</p>
+
+<section *ngIf="(authService.isUserLoggedIn$ | async)">
+  <app-panel1 [container]="containersList.coverpage" [isRequired]="true" name="Cover Page" [dataTable]="cover">
+  </app-panel1>
+  <app-panel1 [container]="containersList.budget" [isRequired]="true" name="Budget Narrative Files"
+    [dataTable]="budget"></app-panel1>
+  <app-panel1 [container]="containersList.contents" [isRequired]="true" name="Key Contents Form" [dataTable]="contents">
+  </app-panel1>
+  <app-panel1 [container]="containersList.abstract" name="Project Abstract Summary" [dataTable]="abstract"></app-panel1>
+  <app-panel1 [container]="containersList.performance" name="Project Performace Site Location"
+    [dataTable]="performance"></app-panel1>
+  <app-panel1 [container]="containersList.purpose" name="Document Purpose Unknown" [dataTable]="purpose"
+    [isMulti]="true"></app-panel1>
+  <div style="display: flex;align-items:center;margin-top:10px">
+    <!-- <button mat-raised-button color="accent" style="margin-right: auto">Cancel</button> -->
+    <button (click)="save()" mat-raised-button color="primary" style="margin-left: auto">Save and Continue</button>
+    <button mat-raised-button color="primary" style="margin-left: 10px">Mark as Complete</button>
+  </div>
+
+  <section *ngIf="allfiles && allfiles.length" class="allFiles">
+    <app-bottom-table [dataTable]=" allfiles" [container]="containersList.allfiles">
+    </app-bottom-table>
+  </section>
+</section>
