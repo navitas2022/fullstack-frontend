@@ -52,6 +52,7 @@ export class AzureComponent implements OnInit, AfterViewInit {
   performance = []
   purpose = []
   allfiles = []
+  currentSelectedToken = '';
   constructor(public authService: AuthService,private changeDetection: ChangeDetectorRef, private route: ActivatedRoute, private router: Router) { }
 
   async ngOnInit() {
@@ -61,16 +62,12 @@ export class AzureComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.route.snapshot.queryParams['scroll'])
+    if (this.route.snapshot.queryParams['id']){
+      this.currentSelectedToken = this.route.snapshot.queryParams['id'];
       setTimeout(() => {
         document.querySelector('.allFiles')?.scrollIntoView({ behavior: 'smooth' });
-        this.router.navigate([], {
-          queryParams: {
-            'scroll': null,
-          },
-          queryParamsHandling: 'merge'
-        })
       }, 1000)
+    }
   }
 
   nameByContainer = {
@@ -113,6 +110,10 @@ export class AzureComponent implements OnInit, AfterViewInit {
       //   el
       // )
     })
+
+    if (name === AllContainers.allfiles && this.currentSelectedToken){
+      this[this.nameByContainer[name]] = this[this.nameByContainer[name]].filter(x => x.token === this.currentSelectedToken)
+    }
 
   }
 
@@ -185,8 +186,13 @@ export class AzureComponent implements OnInit, AfterViewInit {
         await this.moveToContainer(v, AllContainers.allfiles)
       }
     }
-    this.loadData();
+   // this.loadData();
+   this.router.navigate(['/']);
     alert("Everything uploaded successfully!")
+  }
+
+  mark(){
+    this.router.navigate(['/']);
   }
 
 

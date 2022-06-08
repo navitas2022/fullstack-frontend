@@ -60,7 +60,7 @@
                 <button  *ngIf="!isHome" (click)="remove(el)" mat-icon-button color="accent">
                     <mat-icon>delete</mat-icon>
                 </button>
-                <a routerLink="/home" [queryParams]="{scroll: 'true'}" *ngIf="isHome">
+                <a routerLink="/home" [queryParams]="{id: v.token}" *ngIf="isHome">
                     correct&nbsp;attachment
                 </a>
             </div>

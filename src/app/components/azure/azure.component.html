@@ -46,10 +46,10 @@
   <div style="display: flex;align-items:center;margin-top:10px">
     <!-- <button mat-raised-button color="accent" style="margin-right: auto">Cancel</button> -->
     <button (click)="save()" mat-raised-button color="primary" style="margin-left: auto">Save and Continue</button>
-    <button mat-raised-button color="primary" style="margin-left: 10px">Mark as Complete</button>
+    <button (click)="mark()" mat-raised-button color="primary" style="margin-left: 10px">Mark as Complete</button>
   </div>
 
-  <section *ngIf="allfiles && allfiles.length" class="allFiles">
+  <section *ngIf="allfiles && allfiles.length && currentSelectedToken" class="allFiles">
     <app-bottom-table [dataTable]=" allfiles" [container]="containersList.allfiles">
     </app-bottom-table>
   </section>
