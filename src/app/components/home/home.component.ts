@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
-import { AllContainers } from '../azure/azure.component';
-import { listBlob } from '../azure/azure.storage';
+import { AllContainers, listBlob } from '../azure/azure.storage';
 
 @Component({
   selector: 'app-home',

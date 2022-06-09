@@ -18,24 +18,18 @@ import {
   uploadFile2,
   MyFileData,
   getBlob,
-  setMaxNumber
+  setToken,
+  AllContainers,
+  updateMetadata
 } from "./azure.storage";
 
-export enum AllContainers {
-  coverpage = "coverpage2",
-  budget = "budget1",
-  contents = "contents1",
-  abstract = "abstract1",
-  performance = "performance1",
-  purpose = "purpose1",
-  allfiles = "allfiles1"
-}
+
 
 @Component({
   selector: "app-azure-component",
   templateUrl: "./azure.component.html",
 })
-export class AzureComponent implements OnInit, AfterViewInit {
+export class AzureComponent implements OnInit {
   title = "azure demo-ng";
   containers: any = [];
   selectedContainer: string = "";
@@ -53,7 +47,9 @@ export class AzureComponent implements OnInit, AfterViewInit {
   purpose = []
   allfiles = []
   currentSelectedToken = '';
-  constructor(public authService: AuthService,private changeDetection: ChangeDetectorRef, private route: ActivatedRoute, private router: Router) { }
+  constructor(public authService: AuthService,private changeDetection: ChangeDetectorRef, private route: ActivatedRoute, private router: Router) {
+    this.currentSelectedToken = this.route.snapshot.queryParams['id'];
+   }
 
   async ngOnInit() {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -61,14 +57,6 @@ export class AzureComponent implements OnInit, AfterViewInit {
     this.loadData();
   }
 
-  ngAfterViewInit() {
-    if (this.route.snapshot.queryParams['id']){
-      this.currentSelectedToken = this.route.snapshot.queryParams['id'];
-      setTimeout(() => {
-        document.querySelector('.allFiles')?.scrollIntoView({ behavior: 'smooth' });
-      }, 1000)
-    }
-  }
 
   nameByContainer = {
     [AllContainers.coverpage]: 'cover',
@@ -89,6 +77,11 @@ export class AzureComponent implements OnInit, AfterViewInit {
     this.fillCont(AllContainers.performance)
     this.fillCont(AllContainers.purpose)
     this.fillCont(AllContainers.allfiles)
+    
+  }
+
+  update(){
+    this.loadData();
   }
 
 
@@ -99,7 +92,7 @@ export class AzureComponent implements OnInit, AfterViewInit {
     this[this.nameByContainer[name]] = [];
     console.log(name, files)
     files.map(el => {
-      setMaxNumber(el.metadata.token);
+      setToken(el.metadata.token, name, this.currentSelectedToken);
       this[this.nameByContainer[name]].push(
         {
           file: el,
@@ -111,8 +104,13 @@ export class AzureComponent implements OnInit, AfterViewInit {
       // )
     })
 
-    if (name === AllContainers.allfiles && this.currentSelectedToken){
-      this[this.nameByContainer[name]] = this[this.nameByContainer[name]].filter(x => x.token === this.currentSelectedToken)
+    if (name === AllContainers.allfiles){
+      if (this.currentSelectedToken){
+        this[this.nameByContainer[name]] = this[this.nameByContainer[name]].filter(x => x.token === this.currentSelectedToken)
+
+      }else{
+        this[this.nameByContainer[name]] =[]
+      }
     }
 
   }
@@ -169,24 +167,34 @@ export class AzureComponent implements OnInit, AfterViewInit {
     })
   }
 
-  async save() {
-    if (!this.cover.length) return alert("Please upload cover page")
-    if (!this.budget.length) return alert("Please upload budget narrative file")
-    if (!this.contents.length) return alert("Please upload Key contents file")
+  async save(isFinished=false) {
+    if (!this.cover.length && !this.currentSelectedToken) return alert("Please upload cover page")
+    if (!this.budget.length&& !this.currentSelectedToken) return alert("Please upload budget narrative file")
+    if (!this.contents.length&& !this.currentSelectedToken) return alert("Please upload Key contents file")
     //cover upload
 
-    if (this.cover.length) await this.moveToContainer(this.cover[0], AllContainers.allfiles)
-    if (this.budget.length) await this.moveToContainer(this.budget[0], AllContainers.allfiles)
-    if (this.abstract.length) await this.moveToContainer(this.abstract[0], AllContainers.allfiles)
-    if (this.performance.length) await this.moveToContainer(this.performance[0], AllContainers.allfiles)
-    if (this.contents.length) await this.moveToContainer(this.contents[0], AllContainers.allfiles)
+    if (this.cover.length) await this.moveToContainer(this.cover[0], AllContainers.allfiles, isFinished)
+    if (this.budget.length) await this.moveToContainer(this.budget[0], AllContainers.allfiles, isFinished)
+    if (this.abstract.length) await this.moveToContainer(this.abstract[0], AllContainers.allfiles,isFinished)
+    if (this.performance.length) await this.moveToContainer(this.performance[0], AllContainers.allfiles,isFinished)
+    if (this.contents.length) await this.moveToContainer(this.contents[0], AllContainers.allfiles,isFinished)
 
     if (this.purpose.length) {
       for (let v of this.purpose) {
-        await this.moveToContainer(v, AllContainers.allfiles)
+        await this.moveToContainer(v, AllContainers.allfiles,isFinished)
       }
     }
    // this.loadData();
+   if (this.currentSelectedToken && isFinished){
+      this.allfiles.forEach(async (fileData) => {
+        const metadata = fileData;
+        delete metadata.file;
+        metadata.status = "Finished";
+        await updateMetadata(fileData.container, fileData.fileName, metadata);
+      })
+   }
+
+
    this.router.navigate(['/']);
     alert("Everything uploaded successfully!")
   }
@@ -196,9 +204,9 @@ export class AzureComponent implements OnInit, AfterViewInit {
   }
 
 
-  async moveToContainer(fileData: MyFileData, newContainer: string) {
+  async moveToContainer(fileData: MyFileData, newContainer: string, isFinished:boolean) {
     console.log('fileData', fileData, newContainer);
-    await uploadFile2(fileData, newContainer, await getBlob(fileData.container, fileData.fileName))
+    await uploadFile2(fileData, newContainer, await getBlob(fileData.container, fileData.fileName), isFinished)
     await deleteBlob(fileData.container, fileData.fileName)
 
 
@@ -213,5 +221,9 @@ export class AzureComponent implements OnInit, AfterViewInit {
       file: obj,
       filename: obj[0].name
     })
+  }
+
+  getData(name: string){
+    return this.currentSelectedToken ? this.allfiles.filter(x => x.originalContainer === name ): this[this.nameByContainer[name]];
   }
 }

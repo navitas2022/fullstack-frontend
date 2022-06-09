@@ -11,6 +11,16 @@ const accountKey = environment.SAS;
 
 const blobServiceClient = new BlobServiceClient(`${accountKey}`);
 
+export enum AllContainers {
+  coverpage = "coverpage2",
+  budget = "budget1",
+  contents = "contents1",
+  abstract = "abstract1",
+  performance = "performance1",
+  purpose = "purpose1",
+  allfiles = "allfiles1"
+}
+
 export interface BLOBItem extends BlobItem { };
 export interface CONTENT {
   containerName: string; // desired container name
@@ -20,16 +30,19 @@ export interface CONTENT {
 let maxNumber = 10000;
 
 
-export function setMaxNumber(token: any) { // Public Domain/MIT
+export function setToken(token: any, container: string, currentToken: any) { // Public Domain/MIT
+  if (currentToken){
+    maxNumber = parseInt(currentToken);
+    return;
+  }
   const d = parseInt(token);
   if (!isNaN(d)){
-    if (d > maxNumber){
-      maxNumber = d;
+    if (d >= maxNumber){
+      maxNumber = (container === AllContainers.allfiles ? d+1: d);
     }
   }
 }
 export function generateUUID() { // Public Domain/MIT
-  maxNumber++;
     return maxNumber.toString();
 }
 
@@ -53,14 +66,20 @@ export interface MyFileData {
   desc: string,
   token: string,
   container: string,
+  originalContainer: string,
   fileName: string,
   status: string,
 
 }
 
+export function changeName(filename: string, token: string){
+  return filename.split('.')[0]+token+'.'+filename.split('.')[filename.split('.').length-1]
+
+}
+
 export function newFileUpload(file: File, container: string, desc = "Description", token= '', status= 'Not started'): MyFileData{
   token = token || generateUUID();
-  let name = file.name.split('.')[0]+token+'.'+file.name.split('.')[file.name.split('.').length-1]
+  let name = changeName(file.name, token);
   name = name.replace(/ /g, '').replace(/[^\x00-\x7F]/g, "");;
   return {
     file,
@@ -69,6 +88,7 @@ export function newFileUpload(file: File, container: string, desc = "Description
     desc,
     token,
     container,
+    originalContainer: container,
     fileName: name,
     status
   }
@@ -129,7 +149,7 @@ export async function uploadFile(content: CONTENT, metadata ?: {
   return `Upload block blob ${content.filename} successfully ${uploadBlobResponse.requestId}`;
 }
 
-export async function uploadFile2(content: MyFileData, newContainer?: string, file? :Blob) {
+export async function uploadFile2(content: MyFileData, newContainer?: string, file? :Blob, isFinished=false) {
 
   const containerClient = blobServiceClient.getContainerClient(newContainer || content.container);
 
@@ -145,7 +165,8 @@ export async function uploadFile2(content: MyFileData, newContainer?: string, fi
       container: newContainer || content.container,
       desc: content.desc,
       fileName: content.fileName,
-      status: content.status
+      status: isFinished? "Finished" :content.status,
+      originalContainer: content.originalContainer
     }
   });
   console.log('token', content)

@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatExpansionPanel } from '@angular/material/expansion';
-import { deleteBlob, listBlob, newFileUpload, uploadFile2 } from "../azure/azure.storage"
+import { AllContainers, deleteBlob, listBlob, MyFileData, newFileUpload, uploadFile2 } from "../azure/azure.storage"
 import BMF from "browser-md5-file"
-import { AllContainers } from '../azure/azure.component';
 
 @Component({
   selector: 'app-panel1',
@@ -16,8 +15,12 @@ export class Panel1Component implements OnInit {
   @Input() container :string;
   @Input() isMulti = false;
   @Input() isRequired = false;
+  @Input() isEdit = false;
   @Output() uploadFile = new EventEmitter<File>();
+  @Output() update = new EventEmitter();
   bmf = new BMF()
+  containersList = AllContainers;
+
   constructor() {
 
   }
@@ -27,6 +30,7 @@ export class Panel1Component implements OnInit {
     //   console.log(res)
     // })
   }
+
   attachFile(ev: any) {
     ev.preventDefault();
     ev.stopPropagation();
@@ -35,9 +39,11 @@ export class Panel1Component implements OnInit {
     input.click()
     input.onchange = async (e: any) => {
       let file = e.target.files[0]
-      const newFile = newFileUpload(file,this.container);
+      const newFile = newFileUpload(file,this.isEdit ? AllContainers.allfiles: this.container);
+      newFile.originalContainer = this.container;
       console.log('newFile', newFile);
-      if (!this.dataTable.length || this.isMulti) {
+      
+      if ((!this.dataTable.length) || this.isMulti) {
         await uploadFile2(newFile)
 
         this.dataTable.push(newFile)
@@ -46,11 +52,9 @@ export class Panel1Component implements OnInit {
       else {
         let conf = confirm("Only one file allowed. Do you want to replace the file?")
         if (conf) {
-          await deleteBlob(this.container, this.dataTable[0].fileName)
+          await deleteBlob(this.dataTable[0].container,  this.dataTable[0].fileName)
           await uploadFile2(newFile)
-
-          this.dataTable = [];
-          this.dataTable.push(newFile)
+          this.update.emit();
         }
       }
     }

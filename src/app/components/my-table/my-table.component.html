@@ -1,7 +1,7 @@
 <table [cellSpacing]="0">
     <thead>
         <tr>
-            <th class="head name">Document Name</th>
+            <th class="head name" *ngIf="!isHome">Document Name</th>
             <th class="head size-date">Tracking number</th>
             <th class="head size-date" *ngIf="isBottom">Status</th>
             <th class="head size-date" *ngIf="!isHome">Size</th>
@@ -12,8 +12,8 @@
         </tr>
     </thead>
     <tbody>
-        <tr class="tab-row" *ngFor="let v of data;let el=index">
-            <td class="name">
+        <tr class="tab-row" *ngFor="let v of trData;let el=index">
+            <td class="name" *ngIf="!isHome">
                 <a (click)="download(v)" href="javascript:void(0)">
                     {{v.fileName}}
                 </a>
