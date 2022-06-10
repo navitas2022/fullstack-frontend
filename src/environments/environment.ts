@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   ACCOUNT_NAME: "ngangular",
-  SAS: "https://myngangular.blob.core.windows.net/?sv=2020-08-04&ss=bfqt&srt=sco&sp=rwdlacupitfx&se=2022-07-31T20:10:29Z&st=2022-06-09T12:10:29Z&spr=https,http&sig=XAbLsWqSdC0ccafMmjJ4RMi7H9UhKnnRdpzbbtxa8z0%3D",
+  SAS: "https://myngangular.blob.core.windows.net/?sv=2020-08-04&ss=bfqt&srt=sco&sp=rwdlacupitfx&se=2022-08-01T03:43:02Z&st=2022-06-09T19:43:02Z&spr=https&sig=BIjnJ%2FYKrtWPfmneuOw3nEggBCHrNhxHwghwEinN1LE%3D",
   URL: "https://my-api-rpademo-navitas.azurewebsites.net/api"
 };
 

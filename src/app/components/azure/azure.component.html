@@ -32,20 +32,23 @@
 <p *ngIf="!(authService.isUserLoggedIn$ | async)">Please Register and then Login</p>
 
 <section *ngIf="(authService.isUserLoggedIn$ | async)">
-  <app-panel1 [container]="containersList.coverpage" [isRequired]="true" [isEdit]="!!currentSelectedToken"  name="Cover Page"
-    [dataTable]="getData(containersList.coverpage)" (update)="update()">
+  <app-panel1 [container]="containersList.coverpage" [isRequired]="true" [isEdit]="!!currentSelectedToken"
+    name="Cover Page" [dataTable]="getData(containersList.coverpage)" (update)="update()">
   </app-panel1>
-  <app-panel1 [container]="containersList.budget" [isRequired]="true" [isEdit]="!!currentSelectedToken" name="Budget Narrative Files"
-    [dataTable]="getData(containersList.budget)" (update)="update()"></app-panel1>
-  <app-panel1 [container]="containersList.contents" [isRequired]="true" [isEdit]="!!currentSelectedToken" name="Key Contents Form"
-    [dataTable]="getData(containersList.contents)" (update)="update()">
+  <app-panel1 [container]="containersList.budget" [isRequired]="true" [isEdit]="!!currentSelectedToken"
+    name="Budget Narrative Files" [dataTable]="getData(containersList.budget)" (update)="update()"></app-panel1>
+  <app-panel1 [container]="containersList.contents" [isRequired]="true" [isEdit]="!!currentSelectedToken"
+    name="Key Contents Form" [dataTable]="getData(containersList.contents)" (update)="update()">
   </app-panel1>
   <app-panel1 [container]="containersList.abstract" [isEdit]="!!currentSelectedToken" name="Project Abstract Summary"
     [dataTable]="getData(containersList.abstract)" (update)="update()"></app-panel1>
-  <app-panel1 [container]="containersList.performance" [isEdit]="!!currentSelectedToken" name="Project Performace Site Location"
-    [dataTable]="getData(containersList.performance)" (update)="update()"></app-panel1>
+  <app-panel1 [container]="containersList.performance" [isEdit]="!!currentSelectedToken"
+    name="Project Performace Site Location" [dataTable]="getData(containersList.performance)" (update)="update()">
+  </app-panel1>
   <app-panel1 [container]="containersList.purpose" [isEdit]="!!currentSelectedToken" name="Document Purpose Unknown"
     [dataTable]="getData(containersList.purpose)" (update)="update()" [isMulti]="true"></app-panel1>
+  <app-panel1 [container]="containersList.zip" [isEdit]="!!currentSelectedToken" name="Zip Files"
+    [dataTable]="getData(containersList.zip)" (update)="update()"></app-panel1>
   <div style="display: flex;align-items:center;margin-top:10px">
     <!-- <button mat-raised-button color="accent" style="margin-right: auto">Cancel</button> -->
     <button (click)="save()" mat-raised-button color="primary" style="margin-left: auto">Save and Continue</button>

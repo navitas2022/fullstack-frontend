@@ -18,7 +18,8 @@ export enum AllContainers {
   abstract = "abstract1",
   performance = "performance1",
   purpose = "purpose1",
-  allfiles = "allfiles1"
+  allfiles = "allfiles1",
+  zip = "zip1"
 }
 
 export interface BLOBItem extends BlobItem { };

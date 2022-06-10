@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { changeName, deleteBlob, downloadBlob, MyFileData, updateMetadata, uploadFile2 } from '../azure/azure.storage';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AllContainers, changeName, deleteBlob, downloadBlob, MyFileData, updateMetadata, uploadFile2 } from '../azure/azure.storage';
 @Component({
   selector: 'app-my-table',
   templateUrl: './my-table.component.html',
@@ -9,6 +9,7 @@ export class MyTableComponent implements OnInit {
   @Input() data: MyFileData[] = []
   @Input() isHome = false;
   @Input() isBottom = false
+  @Output() update = new EventEmitter();
   constructor() { }
 
   ngOnInit(): void {
@@ -25,7 +26,8 @@ export class MyTableComponent implements OnInit {
     let conf = confirm("Are you sure you want to delete this file?")
     if (conf) {
       let res = await deleteBlob(this.data[index].container, this.data[index].fileName)
-      this.data.splice(index, 1)
+   //   this.data.splice(index, 1)
+      this.update.emit();
     }
   }
 
@@ -47,15 +49,26 @@ export class MyTableComponent implements OnInit {
   replacefile(fileData: MyFileData) {
     let input = document.createElement("input")
     input.type = 'file'
+    if (fileData.originalContainer === AllContainers.zip) {
+      input.accept = ".zip"
+    }
     input.click()
+
+    const types = ['application/x-zip', 'application/zip', 'application/x-zip-compressed','application/octet-stream'];
+
+
     input.onchange = async (e: any) => {
       let file = e.target.files[0]
+      if (!types.includes(file.type) && fileData.originalContainer === AllContainers.zip) {
+        return alert("Incorrect file type for Zip Files")
+      }
       const newFile = fileData;
       await deleteBlob(fileData.container, fileData.fileName)
       newFile.fileName = changeName(file.name, newFile.token);
 
       await uploadFile2(newFile, null, file);
       fileData.file = file;
+      this.update.emit();
     }
   }
 

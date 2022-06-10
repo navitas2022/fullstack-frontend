@@ -86,7 +86,7 @@ export class AuthService {
                     console.log('resp',resp)
                     console.log('userId',this.userId)
                     this.isUserLoggedIn$.next(true);
-          this.router.navigate(["home"]);
+          this.router.navigate(["/"]);
                 // }
 
                 // return resp

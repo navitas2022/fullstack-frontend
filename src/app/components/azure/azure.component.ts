@@ -46,6 +46,7 @@ export class AzureComponent implements OnInit {
   performance = []
   purpose = []
   allfiles = []
+  zip = []
   currentSelectedToken = '';
   constructor(public authService: AuthService,private changeDetection: ChangeDetectorRef, private route: ActivatedRoute, private router: Router) {
     this.currentSelectedToken = this.route.snapshot.queryParams['id'];
@@ -66,6 +67,7 @@ export class AzureComponent implements OnInit {
     [AllContainers.performance]: 'performance',
     [AllContainers.purpose]: 'purpose',
     [AllContainers.allfiles]: 'allfiles',
+    [AllContainers.zip]: 'zip',
   }
 
 
@@ -77,6 +79,7 @@ export class AzureComponent implements OnInit {
     this.fillCont(AllContainers.performance)
     this.fillCont(AllContainers.purpose)
     this.fillCont(AllContainers.allfiles)
+    this.fillCont(AllContainers.zip)
     
   }
 
@@ -103,6 +106,10 @@ export class AzureComponent implements OnInit {
       //   el
       // )
     })
+    if (this.currentSelectedToken){
+      this[this.nameByContainer[name]] = this[this.nameByContainer[name]].filter(x => x.token === this.currentSelectedToken)
+
+    }
 
     if (name === AllContainers.allfiles){
       if (this.currentSelectedToken){
@@ -138,6 +145,7 @@ export class AzureComponent implements OnInit {
   }
 
   create(value: string) {
+    console.log('create', value);
     createContainer(value).then(async (resp) => {
       console.log(resp);
     });
@@ -171,6 +179,8 @@ export class AzureComponent implements OnInit {
     if (!this.cover.length && !this.currentSelectedToken) return alert("Please upload cover page")
     if (!this.budget.length&& !this.currentSelectedToken) return alert("Please upload budget narrative file")
     if (!this.contents.length&& !this.currentSelectedToken) return alert("Please upload Key contents file")
+    //if (this.zip.length && (this.zip[0].file.type && this.zip[0].file.type!=="application/zip" ||  !this.zip[0].file.type && this.zip[0].file.properties.contentType !== 'application/zip')) return alert("Incorrect file type for Zip Files")
+
     //cover upload
 
     if (this.cover.length) await this.moveToContainer(this.cover[0], AllContainers.allfiles, isFinished)
@@ -178,6 +188,7 @@ export class AzureComponent implements OnInit {
     if (this.abstract.length) await this.moveToContainer(this.abstract[0], AllContainers.allfiles,isFinished)
     if (this.performance.length) await this.moveToContainer(this.performance[0], AllContainers.allfiles,isFinished)
     if (this.contents.length) await this.moveToContainer(this.contents[0], AllContainers.allfiles,isFinished)
+    if (this.zip.length) await this.moveToContainer(this.zip[0], AllContainers.allfiles,isFinished)
 
     if (this.purpose.length) {
       for (let v of this.purpose) {
