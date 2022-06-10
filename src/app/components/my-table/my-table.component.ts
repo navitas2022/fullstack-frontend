@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { changeName, deleteBlob, downloadBlob, MyFileData, updateMetadata, uploadFile2 } from '../azure/azure.storage';
+import { AllContainers, changeName, deleteBlob, downloadBlob, MyFileData, updateMetadata, uploadFile2 } from '../azure/azure.storage';
 @Component({
   selector: 'app-my-table',
   templateUrl: './my-table.component.html',
@@ -15,12 +15,8 @@ export class MyTableComponent implements OnInit {
   ngOnInit(): void {
   }
   async download(obj: MyFileData) {
-    downloadBlob(obj.container, obj.fileName).then(res => {
-      let link = document.createElement("a")
-      link.href = res
-      link.download = obj.fileName
-      link.click()
-    })
+    const url = await downloadBlob(obj.container, obj.fileName);
+    window.open(url, '_blank').focus();
   }
   async remove(index: number) {
     let conf = confirm("Are you sure you want to delete this file?")
@@ -36,7 +32,7 @@ export class MyTableComponent implements OnInit {
     const data = [];
 
     this.data.forEach(x => {
-      if (!set.has(x.token)) {
+      if (!set.has(x.token) || !this.isHome) {
         set.add(x.token)
         data.push(x);
       }
@@ -49,9 +45,19 @@ export class MyTableComponent implements OnInit {
   replacefile(fileData: MyFileData) {
     let input = document.createElement("input")
     input.type = 'file'
+    if (fileData.originalContainer === AllContainers.zip) {
+      input.accept = ".zip"
+    }
     input.click()
+
+    const types = ['application/x-zip', 'application/zip', 'application/x-zip-compressed','application/octet-stream'];
+
+
     input.onchange = async (e: any) => {
       let file = e.target.files[0]
+      if (!types.includes(file.type) && fileData.originalContainer === AllContainers.zip) {
+        return alert("Incorrect file type for Zip Files")
+      }
       const newFile = fileData;
       await deleteBlob(fileData.container, fileData.fileName)
       newFile.fileName = changeName(file.name, newFile.token);

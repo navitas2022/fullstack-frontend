@@ -47,6 +47,23 @@ export function generateUUID() { // Public Domain/MIT
     return maxNumber.toString();
 }
 
+function UUID() { // Public Domain/MIT
+  var d = new Date().getTime();//Timestamp
+  var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+  return 'xxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16;//random number between 0 and 16
+      if(d > 0){//Use timestamp until depleted
+          r = (d + r)%16 | 0;
+          d = Math.floor(d/16);
+      } else {//Use microseconds since page-load if supported
+          r = (d2 + r)%16 | 0;
+          d2 = Math.floor(d2/16);
+      }
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+
 export async function getContainers() {
   // debugger;
   let containers = [];
@@ -80,7 +97,7 @@ export function changeName(filename: string, token: string){
 
 export function newFileUpload(file: File, container: string, desc = "Description", token= '', status= 'Not started'): MyFileData{
   token = token || generateUUID();
-  let name = changeName(file.name, token);
+  let name = changeName(file.name, UUID());
   name = name.replace(/ /g, '').replace(/[^\x00-\x7F]/g, "");;
   return {
     file,
@@ -155,7 +172,6 @@ export async function uploadFile2(content: MyFileData, newContainer?: string, fi
   const containerClient = blobServiceClient.getContainerClient(newContainer || content.container);
 
   const blockBlobClient = containerClient.getBlockBlobClient(content.fileName);
-
   const uploadBlobResponse = await blockBlobClient.uploadData(file || content.file, {
     maxSingleShotSize: 4 * 1024 * 1024,
     blobHTTPHeaders: { blobContentType: content.file.type },
@@ -170,6 +186,8 @@ export async function uploadFile2(content: MyFileData, newContainer?: string, fi
       originalContainer: content.originalContainer
     }
   });
+  await blockBlobClient.setHTTPHeaders({blobContentDisposition: `inline;filename="${content.fileName}"`})
+
   console.log('token', content)
 
   return `Upload block blob ${content.token} successfully ${uploadBlobResponse.requestId}`;
@@ -180,11 +198,12 @@ export async function downloadBlob(containerName: string, filename: string) {
   const blobClient = containerClient.getBlobClient(filename);
   // Get blob content from position 0 to the end
   // In browsers, get downloaded data by accessing downloadBlockBlobResponse.blobBody
-  const downloadBlockBlobResponse = await blobClient.download();
-  const downloaded = await downloadBlockBlobResponse.blobBody;
-  let tmp = <Blob>downloaded
-  var url = window.URL.createObjectURL(tmp);
-  return url;
+  // blobClient
+  // const downloadBlockBlobResponse = await blobClient.download();
+  // const downloaded = await downloadBlockBlobResponse.blobBody;
+  // let tmp = <Blob>downloaded
+  // var url = window.URL.createObjectURL(tmp);
+  return blobClient.url;
 
   // [Browsers only] A helper method used to convert a browser Blob into string.
 }

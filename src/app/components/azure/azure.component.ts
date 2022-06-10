@@ -1,27 +1,11 @@
-import { AfterViewInit, ChangeDetectionStrategy } from "@angular/core";
-import { ChangeDetectorRef, OnInit } from "@angular/core";
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-
 import {
-  getContainers,
-  createContainer,
-  listBlob,
-  BLOBItem,
-  CONTENT,
-  uploadFile,
-  deleteBlob,
-  deleteContainerV,
-  downloadBlob,
-  generateUUID,
-  uploadFile2,
-  MyFileData,
-  getBlob,
-  setToken,
-  AllContainers,
-  updateMetadata
+  AllContainers, CONTENT, createContainer, deleteBlob,
+  deleteContainerV, getBlob, listBlob, MyFileData, setToken, updateMetadata, uploadFile, uploadFile2
 } from "./azure.storage";
+
 
 
 
@@ -168,11 +152,6 @@ export class AzureComponent implements OnInit {
     deleteContainerV(value).then(async (resp: string) => {
       console.log(resp);
     });
-  }
-
-  downloadFile(container: string, filename: string) {
-    downloadBlob(container, filename).then((res) => {
-    })
   }
 
   async save(isFinished=false) {
