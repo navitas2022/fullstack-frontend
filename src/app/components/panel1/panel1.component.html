@@ -1,7 +1,7 @@
 <mat-expansion-panel #panel [expanded]="true" hideToggle (closed)="panel.open()">
     <mat-expansion-panel-header
         style="display: flex;justify-content:space-between;background-image:linear-gradient(#C8D7E1,#B6CCDB) ">
-        <mat-panel-title style="display: flex;width:100%;align-items:center;font-weight:bolder">
+        <mat-panel-title [id]="name.replace(' ', '')" style="display: flex;width:100%;align-items:center;font-weight:bolder">
             <mat-icon *ngIf="isRequired" style="font-size:22px;margin-left: 10px;margin-right: 10px;color:#852628">star
             </mat-icon>
             {{name}}
