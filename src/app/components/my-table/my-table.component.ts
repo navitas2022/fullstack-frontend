@@ -10,6 +10,8 @@ export class MyTableComponent implements OnInit {
   @Input() isHome = false;
   @Input() isBottom = false
   @Output() update = new EventEmitter();
+  @Input() tableName = '';
+
   constructor() { }
 
   ngOnInit(): void {

@@ -14,7 +14,7 @@
     <tbody>
         <tr class="tab-row" *ngFor="let v of trData;let el=index">
             <td class="name" *ngIf="!isHome">
-                <a [name]="v.fileName" (click)="download(v)" href="javascript:void(0)">
+                <a [name]="tableName + '_' + (el + 1)" (click)="download(v)" href="javascript:void(0)">
                     {{v.fileName}}
                 </a>
             </td>
@@ -56,7 +56,7 @@
                 <button  *ngIf="isBottom && !isHome" (click)="replacefile(v)" mat-icon-button color="accent">
                     <mat-icon>change_circle</mat-icon>
                 </button>
-                
+
                 <button  *ngIf="!isHome" (click)="remove(el)" mat-icon-button color="accent">
                     <mat-icon>delete</mat-icon>
                 </button>

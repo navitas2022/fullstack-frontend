@@ -66,5 +66,10 @@ export class Panel1Component implements OnInit {
       }
     }
   }
+
+  get tableName() {
+    var str = this.name;
+    return str.split(' ').join('_');
+  }
 }
 

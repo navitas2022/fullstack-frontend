@@ -10,7 +10,7 @@
             <button (click)="attachFile($event)" mat-raised-button color="primary">Attach File</button>
         </mat-panel-description>
     </mat-expansion-panel-header>
-    <app-my-table [data]="dataTable" [isBottom]="true" (update)="update.emit()"></app-my-table>
+    <app-my-table [data]="dataTable" [tableName]="tableName" [isBottom]="true" (update)="update.emit()"></app-my-table>
 
     <!-- <section *ngIf="files && files.length" class="allFiles">
         <app-bottom-table [dataTable]="files" [container]="containersList.allfiles">
