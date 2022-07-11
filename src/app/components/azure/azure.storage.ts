@@ -97,8 +97,8 @@ export function changeName(filename: string, token: string) {
 
 export function newFileUpload(file: File, container: string, desc = "Description", token = '', status = 'Not started'): MyFileData {
   token = token || generateUUID();
-  let name = changeName(file.name, UUID());
-  name = name.replace(/ /g, '').replace(/[^\x00-\x7F]/g, "");;
+  //let name = changeName(file.name, UUID());
+  //name = name.replace(/ /g, '').replace(/[^\x00-\x7F]/g, "");;
   return {
     file,
     size: (file.size / 1024).toFixed(0) + "kb",
@@ -107,7 +107,7 @@ export function newFileUpload(file: File, container: string, desc = "Description
     token,
     container,
     originalContainer: container,
-    fileName: name,
+    fileName: file.name,
     status
   }
 }
